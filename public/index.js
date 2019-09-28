@@ -15,7 +15,7 @@ class wallpaperificationOrder {
     
         let start = img.search(",")
         img = img.substr(start+1)
-        //console.log(start, img)
+        console.log(start, img)
     
         let string = window.processImg(this.width, this.height, img, this.blur)
         console.log("Done!")
@@ -32,7 +32,6 @@ class wallpaperificationOrder {
         this.file = null
         this.base64_in = ""
         this.base64_out = ""
-        this.done = false
 
         let files = null
         switch(Object.getPrototypeOf(img_in)){
@@ -50,14 +49,17 @@ class wallpaperificationOrder {
                 break;
         }
 
-        //this.wallpaperify()
-        this.done = true
+        if(this.file == undefined){
+            throw new Error("Missing image file")
+        }
+
     }
 
     async wallpaperify(){
         this.base64_in = await this.readFile()
+        console.log("file read")
         this.base64_out = await this.process()
-        return base64_out
+        return this.base64_out
     }
 
 }
@@ -68,8 +70,15 @@ $("#runButton").on("click", async () => {
     let height = parseInt($("#height").val())
     let file_input = document.getElementById("upload")
     let blur = parseInt($("#blur").val())
-    window.order = new wallpaperificationOrder(width, height, file_input, blur)
-    
+    window.order = null
+    $("#error").text("")
+    try{
+        order = new wallpaperificationOrder(width, height, file_input, blur)
+    } catch(e){
+        $("#error").text("Image file is required")
+        console.error(e)
+        return null
+    }
     $("#runButton").attr("disabled", true)
     await order.wallpaperify()
     $("#runButton").attr("disabled", false)
@@ -79,5 +88,5 @@ $("#runButton").on("click", async () => {
 })
 
 $("#download").on("click", () => {
-    
+
 })
