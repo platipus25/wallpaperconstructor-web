@@ -7,23 +7,33 @@ license that can be found in the LICENSE file.
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Wallpaperconstructor</title>
+	<title>Wallpaperconstructor</title>
+	<link href="https://fonts.googleapis.com/css?family=Niramit:300,400&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="index.css" type="text/css"/>
   </head>
 
   <body>
 	<h1>Wallpaperconstructor</h1>  
 
-	<form>
-			Width: <input id="width" value="1440"/>
-			Height: <input id="height" value="900"/>
-			Blur: <input id="blur" value="20"/>
+	<form name="wallpaperconstructor-order">
+		Width: <input id="width" value="1440" name="width"/>
+		<wbr>
+		Height: <input id="height" value="900" name="height"/>
+		<wbr>
+		Blur: <input id="blur" value="20" name="blur"/>
+		<wbr>
+		Upload a file: <wbr><input id="upload" type="file" required/>
+		<wbr>
+		<span id="error"></span>
+	</form>
+
+	<button id="runButton" disabled>Run</button>
 	
-			Upload a file: <input id="upload" type="file"/>
-		</form>
-	
-		<button id="runButton" disabled>Run</button>
-		<img id="image" src="" />
+	<div id="content">
 		<a id="download" href="" download>Download</a>
+		<img id="image" src="" />
+	</div>
+
 	
     <script src="/wasm_exec.js"></script>
 	<script src="download.js"></script>

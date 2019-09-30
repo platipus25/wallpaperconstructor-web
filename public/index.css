@@ -1,0 +1,39 @@
+body{
+    display: grid;
+    font-family: "Niramit", sans-serif;
+    font-size: calc(1.2vw + 1.2vh);
+    grid-template-areas: ". title ." "form form form" "start start start" "content content content";
+    grid-template-areas: "title title title" "start start start" "form content content" "form content content";   
+    /*grid-template-rows: fit-content fit-content fit-content;
+    grid-template-columns: repeat(3, 1fr);*/
+    grid-template-columns: 1fr 3fr;
+
+}
+
+input{
+    font-size: 0.6em;
+}
+
+h1 {
+    text-align: center;
+    grid-area:title;
+}
+
+img{
+    width:100%;
+    border:none;
+}
+
+form{
+    grid-area:form;
+    white-space: nowrap; 
+}
+
+#content{
+    grid-area:content;
+}
+
+#runButton {
+    grid-area:start;
+}
+

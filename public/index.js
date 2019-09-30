@@ -88,5 +88,6 @@ $("#runButton").on("click", async () => {
 })
 
 $("#download").on("click", () => {
-
+    console.log("downloading")
+    download(order.base64_out, `${order.file.name}`, "image/png")
 })
