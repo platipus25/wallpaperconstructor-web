@@ -8,7 +8,7 @@ license that can be found in the LICENSE file.
   <head>
     <meta charset="utf-8" />
 	<title>Wallpaperconstructor</title>
-	<link href="https://fonts.googleapis.com/css?family=Niramit:300,400&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:200|Niramit&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="index.css" type="text/css"/>
   </head>
 
@@ -16,13 +16,13 @@ license that can be found in the LICENSE file.
 	<h1>Wallpaperconstructor</h1>  
 
 	<form name="wallpaperconstructor-order">
-		Width: <input id="width" value="1440" name="width"/>
+		<span>Width: <wbr><input id="width" value="1440" name="width"/></span>
 		<wbr>
-		Height: <input id="height" value="900" name="height"/>
+		<span>Height: <wbr><input id="height" value="900" name="height"/></span>
 		<wbr>
-		Blur: <input id="blur" value="20" name="blur"/>
+		<span>Blur: <wbr><input id="blur" value="20" name="blur"/></span>
 		<wbr>
-		Upload a file: <wbr><input id="upload" type="file" required/>
+		<span>Upload a file: <wbr><wbr><input id="upload" type="file" required/></span>
 		<wbr>
 		<span id="error"></span>
 	</form>
@@ -57,10 +57,17 @@ license that can be found in the LICENSE file.
 			mod = result.module;
 			inst = result.instance;
 			document.getElementById("runButton").disabled = false;
-			go.run(inst)
-			WebAssembly.instantiate(mod, go.importObject).then((result) => inst = result);
+			instantiate()
 		}
 		);
+
+		let instantiate = () => {
+			console.log("running")
+			go.run(inst)
+			console.log("instatntiating")
+			WebAssembly.instantiate(mod, go.importObject).then((result) => inst = result);
+			go._exitPromise.then(() => instantiate())
+		}
 	</script>
 	<script src="index.js"></script>
   </body>
