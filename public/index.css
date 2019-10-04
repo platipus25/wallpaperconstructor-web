@@ -1,8 +1,7 @@
 body{
     display: grid;
     font-family: "Niramit", sans-serif;
-    font-size: calc(1.2vw + 1.2vh);
-    grid-template-areas: ". title ." "form form form" "start start start" "content content content";
+    font-size: calc(2vw + 1.2vh);
     grid-template-areas: "title title title" "start start start" "form content content" "form content content";   
     /*grid-template-rows: fit-content fit-content fit-content;
     grid-template-columns: repeat(3, 1fr);*/
@@ -17,6 +16,8 @@ input{
 h1 {
     text-align: center;
     grid-area:title;
+    margin: 1vh 0;
+    font-family: "Montserrat", "Niramit", sans-serif;
 }
 
 img{
@@ -24,9 +25,18 @@ img{
     border:none;
 }
 
+span{
+    display:grid;
+}
+
 form{
     grid-area:form;
-    white-space: nowrap; 
+    white-space: nowrap;
+    display:grid;
+    align-content:space-between;
+    grid-template-columns: repeat(7, auto);
+    grid-template-rows: repeat(7, auto);
+    grid-auto-flow: column dense;
 }
 
 #content{
@@ -35,5 +45,28 @@ form{
 
 #runButton {
     grid-area:start;
+    font-size:inherit;
+    border-radius:6px;
+    box-shadow: 2px 2px 2px 1px green;
+    border:none;
+    margin: 1.2vh 0;
 }
 
+#error{
+    color:red;
+}
+
+@media only screen and (max-width: 700px){
+    body{
+        grid-template-areas: "title title title" "form form form" "start start start" "content content content";
+    }
+    form{
+        grid-auto-flow: row dense;
+    }
+}
+
+@media only screen and (max-width: 600px){
+    form{
+        grid-auto-flow: column dense;
+    }
+}
