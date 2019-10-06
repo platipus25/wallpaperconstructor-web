@@ -15,7 +15,7 @@ RUN cp "$(go env GOROOT)/misc/wasm/wasm_exec.js" .
 FROM httpd:alpine
 WORKDIR /usr/local/apache2/htdocs/
 
+COPY ./httpd.conf /usr/local/apache2/conf/httpd.conf
 COPY ./public .
 COPY --from=build /app/wasm_exec.js .
 COPY --from=build /app/main.wasm .
-
