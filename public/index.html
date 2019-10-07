@@ -7,12 +7,13 @@
 	<title>Wallpaperconstructor</title>
 	<link href="https://fonts.googleapis.com/css?family=Montserrat:200|Niramit&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="index.css" type="text/css"/>
+	<link rel="stylesheet" href="dropzone.min.css" type="text/css"/>
   </head>
 
   <body>
 	<h1>Wallpaperconstructor</h1>  
 
-	<form name="wallpaperconstructor-order">
+	<form name="wallpaperconstructor-order" id="wallpaperconstructor-order">
 		<span>Width: <wbr><input id="width" value="1440" name="width"/></span>
 		<wbr>
 		<span>Height: <wbr><input id="height" value="900" name="height"/></span>
@@ -24,16 +25,17 @@
 		<span id="error"></span>
 	</form>
 
-	<button id="runButton" disabled>Run</button>
+	<input id="runButton" type="submit" value="Run" form="wallpaperconstructor-order" disabled>
 	
 	<div id="content">
-		<a id="download" href="" download>Download</a>
 		<img id="image" src="" />
+		<a id="download" href="" download>Download</a>
 	</div>
 
 	
     <script src="/wasm_exec.js"></script>
 	<script src="download.js"></script>
+	<script src="dropzone.min.js"></script>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
@@ -51,6 +53,7 @@
 
 		WebAssembly.instantiateStreaming(fetch("/main.wasm"), go.importObject).then(
 		result => {
+
 			mod = result.module;
 			inst = result.instance;
 			document.getElementById("runButton").disabled = false;

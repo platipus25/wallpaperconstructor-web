@@ -56,6 +56,11 @@ form{
     color:red;
 }
 
+#download{
+    display:none;
+    text-align:center;
+}
+
 @media only screen and (max-width: 992px){
     body{
         grid-template-areas: "title title title" "form form form" "start start start" "content content content";

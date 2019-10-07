@@ -65,7 +65,8 @@ class wallpaperificationOrder {
 }
 
 
-$("#runButton").on("click", async () => {
+$("#wallpaperconstructor-order").on("submit", async (event) => {
+    event.preventDefault();
     let width = parseInt($("#width").val())
     let height = parseInt($("#height").val())
     let file_input = document.getElementById("upload")
@@ -79,9 +80,11 @@ $("#runButton").on("click", async () => {
         console.error(e)
         return null
     }
+    $("#download").hide()
     $("#runButton").attr("disabled", true)
     await order.wallpaperify()
     $("#runButton").attr("disabled", false)
+    $("#download").show()
 
     $("#image").attr("src", order.base64_out)
     $("#download").attr("href", order.base64_out)
