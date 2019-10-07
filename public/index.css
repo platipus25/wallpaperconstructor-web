@@ -39,17 +39,17 @@ form{
     grid-auto-flow: column dense;
 }
 
-#content{
-    grid-area:content;
-}
-
-#runButton {
+#runButton, button {
     grid-area:start;
     font-size:inherit;
     border-radius:6px;
     box-shadow: 2px 2px 2px 1px green;
     border:none;
     margin: 1.2vh 0;
+}
+
+#content{
+    grid-area:content;
 }
 
 #error{
