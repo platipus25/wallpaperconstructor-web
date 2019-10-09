@@ -7,7 +7,6 @@
 	<title>Wallpaperconstructor</title>
 	<link href="https://fonts.googleapis.com/css?family=Montserrat:200|Niramit&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="index.css" type="text/css"/>
-	<link rel="stylesheet" href="dropzone.min.css" type="text/css"/>
   </head>
 
   <body>
@@ -20,13 +19,18 @@
 		<wbr>
 		<span>Blur: <wbr><input id="blur" value="20" name="blur"/></span>
 		<wbr>
-		<span>Upload a file: <wbr><wbr><input id="upload" type="file" required/></span>
+		<span>Upload a file: <wbr><wbr><input id="upload" accept="image/png, image/jpeg" type="file" required/></span>
 		<wbr>
 		<span id="error"></span>
 	</form>
 
-	<input id="runButton" type="submit" value="Run" form="wallpaperconstructor-order" disabled>
-	
+	<div id="bar">
+		<input id="runButton" type="submit" value="Run" form="wallpaperconstructor-order" disabled>
+		<div id="progress-container">
+			<div id="progress-bar"></div>
+		</div>
+	</div>
+
 	<div id="content">
 		<img id="image" src="" />
 		<a id="download" href="" download><button>Download</button></a>
@@ -35,40 +39,8 @@
 	
     <script src="/wasm_exec.js"></script>
 	<script src="download.js"></script>
-	<script src="dropzone.min.js"></script>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script>
-		if (!WebAssembly.instantiateStreaming) {
-		// polyfill
-		WebAssembly.instantiateStreaming = async (resp, importObject) => {
-			const source = await (await resp).arrayBuffer();
-			return await WebAssembly.instantiate(source, importObject);
-		};
-		}
-
-		const go = new Go();
-
-		let mod, inst;
-
-		WebAssembly.instantiateStreaming(fetch("/main.wasm"), go.importObject).then(
-		result => {
-
-			mod = result.module;
-			inst = result.instance;
-			document.getElementById("runButton").disabled = false;
-			instantiate()
-		}
-		);
-
-		let instantiate = () => {
-			console.log("running")
-			go.run(inst)
-			console.log("instatntiating")
-			WebAssembly.instantiate(mod, go.importObject).then((result) => inst = result);
-			go._exitPromise.then(() => instantiate())
-		}
-	</script>
 	<script src="index.js"></script>
   </body>
 </html>

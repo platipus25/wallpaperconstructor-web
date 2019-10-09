@@ -1,98 +1,115 @@
 class wallpaperificationOrder {
-    readFile(){
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(this.file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
-    }
+	readFile(){
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(this.file);
+			reader.onload = () => resolve(reader.result);
+			reader.onerror = error => reject(error);
+		});
+	}
 
-    async process(){
-        console.log("Processing...")
-        let img = this.base64_in
-        //console.log(img)
-    
-        let start = img.search(",")
-        img = img.substr(start+1)
-        console.log(start, img)
-    
-        let string = window.processImg(this.width, this.height, img, this.blur)
-        console.log("Done!")
-        
-        let url = `data:image/png;base64,${string}`
-    
-        return url
-    }
+	recieveResponse(worker) {
+		return new Promise((resolve) => {
+			let listener = (event) => {
+				worker.removeEventListener(event, listener)
+				resolve(event.data)
+			}
+			worker.addEventListener("message", listener)
+		})
+	}
 
-    constructor(width, height, img_in, blur){
-        this.width = width
-        this.height = height
-        this.blur = blur
-        this.file = null
-        this.base64_in = ""
-        this.base64_out = ""
+	async process(){
+		console.log("Processing...")
+		let img = this.base64_in
+		//console.log(img)
+	
+		let start = img.search(",")
+		img = img.substr(start+1)
+		console.log(start, img)
+	
+		let response = this.recieveResponse(wallpaperconstructorWorker)
+		wallpaperconstructorWorker.postMessage([this.width, this.height, img, this.blur])
+		let string = await response
+		console.log("Done!")
+		
+		let url = `data:image/png;base64,${string}`
+	
+		return url
+	}
 
-        let files = null
-        switch(Object.getPrototypeOf(img_in)){
-            case File.prototype:
-                this.file = img_in
-                break;
-            case HTMLInputElement.prototype:
-                files = img_in.files
-                this.file = files[0]
-                break;
-            default:
-                img_in = document.getElementById("upload")
-                files = upload.files
-                this.file = files[0]
-                break;
-        }
+	constructor(width, height, img_in, blur){
+		this.width = width
+		this.height = height
+		this.blur = blur
+		this.file = null
+		this.base64_in = ""
+		this.base64_out = ""
 
-        if(this.file == undefined){
-            throw new Error("Missing image file")
-        }
+		let files = null
+		switch(Object.getPrototypeOf(img_in)){
+			case File.prototype:
+				this.file = img_in
+				break;
+			case HTMLInputElement.prototype:
+				files = img_in.files
+				this.file = files[0]
+				break;
+			default:
+				img_in = document.getElementById("upload")
+				files = upload.files
+				this.file = files[0]
+				break;
+		}
 
-    }
+		if(this.file == undefined){
+			throw new Error("Missing image file")
+		}
 
-    async wallpaperify(){
-        this.base64_in = await this.readFile()
-        console.log("file read")
-        this.base64_out = await this.process()
-        return this.base64_out
-    }
+	}
+
+	async wallpaperify(){
+		this.base64_in = await this.readFile()
+		console.log("file read")
+		this.base64_out = await this.process()
+		return this.base64_out
+	}
 
 }
 
 
 $("#wallpaperconstructor-order").on("submit", async (event) => {
-    event.preventDefault();
-    let width = parseInt($("#width").val())
-    let height = parseInt($("#height").val())
-    let file_input = document.getElementById("upload")
-    let blur = parseInt($("#blur").val())
-    window.order = null
-    $("#error").text("")
-    try{
-        order = new wallpaperificationOrder(width, height, file_input, blur)
-    } catch(e){
-        $("#error").text("Image file is required")
-        console.error(e)
-        return null
-    }
-    $("#download").hide()
-    $("#runButton").attr("disabled", true)
-    await order.wallpaperify()
-    $("#runButton").attr("disabled", false)
-    $("#download").show()
+	event.preventDefault();
+	let width = parseInt($("#width").val())
+	let height = parseInt($("#height").val())
+	let file_input = document.getElementById("upload")
+	let blur = parseInt($("#blur").val())
+	window.order = null
+	$("#error").text("")
+	try{
+		order = new wallpaperificationOrder(width, height, file_input, blur)
+	} catch(e){
+		$("#error").text("Image file is required")
+		console.error(e)
+		return null
+	}
+	$("#download").hide()
+	$("#runButton").attr("disabled", true)
+	progress = document.getElementById("progress-bar").animate(progressBar, progressBarTiming)
+	await progress.play()
 
-    $("#image").attr("src", order.base64_out)
-    $("#download").attr("href", order.base64_out)
+	await order.wallpaperify()
+
+	$("#runButton").attr("disabled", false)
+	$("#download").show()
+	progress.cancel()
+	$("#progress-bar").css("width:100%;left:0;right:0;")
+	$("#image").attr("src", order.base64_out)
+	$("#download").attr("href", order.base64_out)
 })
 
 $("#download").on("click", () => {
-    console.log("downloading")
-    download(order.base64_out, `${order.file.name}`, "image/png")
+	console.log("downloading")
+	download(order.base64_out, `${order.file.name}`, "image/png")
 })
 
 $(document).ready(() => {
