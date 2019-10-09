@@ -94,3 +94,35 @@ $("#download").on("click", () => {
     console.log("downloading")
     download(order.base64_out, `${order.file.name}`, "image/png")
 })
+
+$(document).ready(() => {
+	progressBar = [
+		{ width:"0%", left:0, borderRadius: "0px 0px 0px 16px", backgroundColor:"steelblue"},
+		{ borderRadius: "0px 0px 0px 6px", left:0, width:"30%"},
+		{ borderRadius:"0px 0px 0px 0px", width: "20%"},
+		{ borderRadius:"0px 0px 0px 0px"},
+		{ width:"5%", left:"95%", right:0, borderRadius: "0px 0px 16px 0px"},
+		{ width: "1%", left:"99%", right: 0, borderRadius: "0px 0px 16px 0px",  backgroundColor:"steelblue"},
+	];
+	
+	progressBarTiming = {
+		duration: 2000,
+		iterations: Infinity,
+		fill: "both",
+		easing: "ease-in"
+	}
+	
+	progress = document.getElementById("progress-bar").animate(
+		progressBar,
+		progressBarTiming
+	)
+	progress.cancel()
+	
+	wallpaperconstructorWorker = new Worker('worker.js');
+	let listener = (event) => {
+		wallpaperconstructorWorker.removeEventListener(event, listener)
+		document.getElementById("runButton").disabled = false;
+	}
+	wallpaperconstructorWorker.addEventListener("message", listener)
+	//worker.postMessage("hi")
+})
